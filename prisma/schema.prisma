@@ -9,3 +9,17 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// schema.prisma
+model Home {
+  id          String   @id @default(cuid())
+  image       String?
+  title       String
+  description String
+  price       Float
+  guests      Int
+  beds        Int
+  baths       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

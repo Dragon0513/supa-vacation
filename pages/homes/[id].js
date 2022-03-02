@@ -1,5 +1,4 @@
-// pages/homes/[id].js
-
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Layout from '@/components/Layout';
 
@@ -15,7 +14,7 @@ export async function getStaticPaths() {
     paths: homes.map(home => ({
       params: { id: home.id },
     })),
-    fallback: false,
+    fallback: true,
   };
 }
 
@@ -40,6 +39,13 @@ export async function getStaticProps({ params }) {
 }
 
 const ListedHome = ({home = null}) => {
+  const router = useRouter();
+
+  // Fallback version
+  if (router.isFallback) {
+  	return 'Loading...'; 
+  }
+
   return (
     <Layout>
       <div className="max-w-screen-lg mx-auto">

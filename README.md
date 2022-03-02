@@ -48,6 +48,19 @@ npm run build
 npm run start
 ```
 
+## Notes
+
+ Sync our Prisma schema to our database.
+ ```
+npx prisma db push or npx prisma migrate dev (this is better tho)
+ ```
+Prisma Studio, a database client to explore and manipulate your data.
+
+```
+npx prisma studio
+```
+
+
 ## License
 
 [MIT](https://github.com/AlterClassIO/supa-vacation/blob/master/LICENSE)

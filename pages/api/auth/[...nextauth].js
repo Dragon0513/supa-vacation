@@ -10,6 +10,16 @@ import { prisma } from "../../../prisma";
 
 const emailsDir = path.resolve(process.cwd(), 'emails');
 
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_SERVER_HOST,
+  port: process.env.EMAIL_SERVER_PORT,
+  auth: {
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
+  },
+  secure: true,
+});
+
 const sendVerificationRequest = ({ identifier, url }) => {
   const emailFile = readFileSync(path.join(emailsDir, 'confirm-email.html'), {
     encoding: 'utf8',
@@ -27,15 +37,27 @@ const sendVerificationRequest = ({ identifier, url }) => {
   });
 };
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_SERVER_HOST,
-  port: process.env.EMAIL_SERVER_PORT,
-  auth: {
-    user: process.env.EMAIL_SERVER_USER,
-    pass: process.env.EMAIL_SERVER_PASSWORD,
-  },
-  secure: true,
-});
+const sendWelcomeEmail = async ({ user }) => {
+  const { email } = user;
+
+  try {
+    const emailFile = readFileSync(path.join(emailsDir, 'welcome.html'), {
+      encoding: 'utf8',
+    });
+    const emailTemplate = Handlebars.compile(emailFile);
+    await transporter.sendMail({
+      from: `"✨ SupaVacation" ${process.env.EMAIL_FROM}`,
+      to: email,
+      subject: 'Welcome to SupaVacation! 🎉',
+      html: emailTemplate({
+        base_url: process.env.NEXTAUTH_URL,
+        support_email: 'support@themodern.dev',
+      }),
+    });
+  } catch (error) {
+    console.log(`❌ Unable to send welcome email to user (${email})`);
+  }
+};
 
 export default NextAuth({
   pages: {
@@ -44,6 +66,7 @@ export default NextAuth({
     error: '/',
     verifyRequest: '/',
   },
+  events: { createUser: sendWelcomeEmail },
   providers: [
     EmailProvider({
       sendVerificationRequest,

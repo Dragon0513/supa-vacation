@@ -6,6 +6,12 @@ import nodemailer from 'nodemailer';
 import { prisma } from "../../../prisma";
 
 export default NextAuth({
+  pages: {
+    signIn: '/',
+    signOut: '/',
+    error: '/',
+    verifyRequest: '/',
+  },
   providers: [
     EmailProvider({
       server: {

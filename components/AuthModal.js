@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import { Formik, Form } from 'formik';
 import { Dialog, Transition } from '@headlessui/react';
 import { SparklesIcon, MailOpenIcon, XIcon } from '@heroicons/react/outline';
+import { signIn } from 'next-auth/react';
 import Input from './Input';
 
 const SignInSchema = Yup.object().shape({
@@ -68,7 +69,27 @@ const AuthModal = ({ show = false, onClose = () => null }) => {
   const [showSignIn, setShowSignIn] = useState(false);
 
   const signInWithEmail = async ({ email }) => {
-    // TODO: Perform email auth
+    let toastId;
+    try {
+      toastId = toast.loading('Loading...');
+      setDisabled(true);
+      // Perform sign in
+      const { error } = await signIn('email', {
+        redirect: false,
+        callbackUrl: window.location.href,
+        email,
+      });
+      // Something went wrong
+      if (error) {
+        throw new Error(error);
+      }
+      setConfirm(true);
+      toast.dismiss(toastId);
+    } catch (err) {
+      toast.error('Unable to sign in', { id: toastId });
+    } finally {
+      setDisabled(false);
+    }
   };
 
   const signInWithGoogle = () => {

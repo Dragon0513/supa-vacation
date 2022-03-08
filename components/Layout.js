@@ -6,6 +6,7 @@ import Image from 'next/image';
 import PropTypes from 'prop-types';
 import AuthModal from './AuthModal';
 import { Menu, Transition } from '@headlessui/react';
+import { useSession, signOut } from 'next-auth/react';
 import {
   HeartIcon,
   HomeIcon,
@@ -35,17 +36,17 @@ const menuItems = [
   {
     label: 'Logout',
     icon: LogoutIcon,
-    onClick: () => null,
+    onClick: signOut,
   },
 ];
 
 const Layout = ({ children = null }) => {
   const router = useRouter();
-
+  const { data: session, status } = useSession();
   const [showModal, setShowModal] = useState(false);
-
-  const user = null;
-  const isLoadingUser = false;
+  
+  const user = session?.user;
+  const isLoadingUser = status === 'loading';
 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);

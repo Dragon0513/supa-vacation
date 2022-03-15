@@ -60,6 +60,15 @@ Prisma Studio, a database client to explore and manipulate your data.
 npx prisma studio
 ```
 
+Get the connection URL from supabase
+* From your project's page, go to "Settings"
+* Click the "Database" tab in the sidebar
+* Scroll down to the bottom of the page and look for the "Connection string" section
+* Choose "Nodejs" and copy the URL
+```
+DATABASE_URL="postgresql://postgres:<password>@db.<randomid>.supabase.co:5432/postgres"
+```
+
 
 ## License
 

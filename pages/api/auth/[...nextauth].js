@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import EmailProvider from 'next-auth/providers/email';
+import GoogleProvider from 'next-auth/providers/google';
 import nodemailer from 'nodemailer';
 import Handlebars from 'handlebars';
 import { readFileSync } from 'fs';
@@ -63,14 +64,19 @@ export default NextAuth({
   pages: {
     signIn: '/',
     signOut: '/',
-    error: '/',
+    error: '/auth/error',
     verifyRequest: '/',
+    newUser: '/'
   },
   events: { createUser: sendWelcomeEmail },
   providers: [
     EmailProvider({
       sendVerificationRequest,
       maxAge: 10 * 60, // Magic links are valid for 10 min only
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
   adapter: PrismaAdapter(prisma)

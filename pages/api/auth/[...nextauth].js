@@ -68,12 +68,12 @@ export default NextAuth({
     verifyRequest: '/',
     newUser: '/'
   },
-  events: { createUser: sendWelcomeEmail },
+  // events: { createUser: sendWelcomeEmail },
   providers: [
-    EmailProvider({
-      sendVerificationRequest,
-      maxAge: 10 * 60, // Magic links are valid for 10 min only
-    }),
+    // EmailProvider({
+    //   sendVerificationRequest,
+    //   maxAge: 10 * 60, // Magic links are valid for 10 min only
+    // }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,

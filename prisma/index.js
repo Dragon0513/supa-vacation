@@ -5,10 +5,10 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 const serialize = (data) => {
-	return JSON.parse(JSON.stringify(data));
+  return JSON.parse(JSON.stringify(data));
 }
 
 export {
-	prisma,
-	serialize
+  prisma,
+  serialize
 }

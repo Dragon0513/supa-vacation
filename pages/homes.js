@@ -1,5 +1,5 @@
 import { getSession } from 'next-auth/react';
-import { prisma, serialize } from "../prisma";
+import { prisma, serialize } from "@/prisma/index";
 
 import Layout from '@/components/Layout';
 import Grid from '@/components/Grid';

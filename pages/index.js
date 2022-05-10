@@ -1,7 +1,7 @@
 import Layout from '@/components/Layout';
 import Grid from '@/components/Grid';
 
-import { prisma, serialize } from "../prisma";
+import { prisma, serialize } from "@/prisma/index";
 
 export async function getServerSideProps() {
   // Get all homes

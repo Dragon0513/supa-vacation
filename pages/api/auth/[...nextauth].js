@@ -7,7 +7,7 @@ import Handlebars from 'handlebars';
 import { readFileSync } from 'fs';
 import path from 'path';
 
-import { prisma } from "../../../prisma";
+import { prisma } from "@/prisma/index";
 
 const emailsDir = path.resolve(process.cwd(), 'emails');
 

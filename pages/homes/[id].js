@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Layout from '@/components/Layout';
 
-import { prisma, serialize } from "../../prisma";
+import { prisma, serialize } from "@/prisma/index";
 
 export async function getStaticPaths() {
   // Get all the homes IDs from the database

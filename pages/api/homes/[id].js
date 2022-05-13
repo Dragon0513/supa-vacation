@@ -1,5 +1,5 @@
 import { getSession } from 'next-auth/react';
-import { supabase } from '@/prisma/index';
+import { prisma, supabase } from '@/prisma/index';
 
 export default async function handler(req, res) {
 

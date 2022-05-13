@@ -34,7 +34,7 @@ export async function getServerSideProps(context) {
 
   // Get all homes from the authenticated user
   const homes = await prisma.home.findMany({
-    where: { owner: { email: session.user.email } },
+    where: { User: { email: session.user.email } },
     orderBy: { createdAt: 'desc' },
   });
 

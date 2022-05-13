@@ -1,5 +1,9 @@
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
+import { toast } from 'react-hot-toast';
+import axios from "axios";
 import Layout from '@/components/Layout';
 
 import { prisma, serialize } from "@/prisma/index";
@@ -39,7 +43,41 @@ export async function getStaticProps({ params }) {
 }
 
 const ListedHome = ({home = null}) => {
+  const { data: session } = useSession();
+  const [isOwner, setIsOwner] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      if (session?.user) {
+        try {
+          const owner = await axios.get(`/api/homes/${home.id}/owner`).then(res => res.data);
+          setIsOwner(owner?.id === session.user.id);
+        } catch (e) {
+          console.log(e)
+          setIsOwner(false);
+        }
+      }
+    })();
+  }, [session?.user, home.id]);
+
+  const deleteHome = async () => {
+    let toastId;
+    try {
+      toastId = toast.loading('Deleting...');
+      setDeleting(true);
+      // Delete home from DB
+      await axios.delete(`/api/homes/${home.id}`);
+      // Redirect user
+      toast.success('Successfully deleted', { id: toastId });
+      router.push('/homes');
+    } catch (e) {
+      console.log(e);
+      toast.error('Unable to delete home', { id: toastId });
+      setDeleting(false);
+    }
+  };
 
   // Fallback version
   if (router.isFallback) {
@@ -68,8 +106,28 @@ const ListedHome = ({home = null}) => {
               </li>
             </ol>
           </div>
-        </div>
+          {isOwner ? (
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={() => router.push(`/homes/${home.id}/edit`)}
+                className="px-4 py-1 border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white transition rounded-md disabled:text-gray-800 disabled:bg-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Edit
+              </button>
 
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={deleteHome}
+                className="rounded-md border border-rose-500 text-rose-500 hover:bg-rose-500 hover:text-white focus:outline-none transition disabled:bg-rose-500 disabled:text-white disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1"
+              >
+                Delete
+              </button>
+            </div>
+          ) : null}
+        </div>
         <div className="mt-6 relative aspect-video bg-gray-200 rounded-lg shadow-md overflow-hidden">
           {home?.image ? (
             <Image
